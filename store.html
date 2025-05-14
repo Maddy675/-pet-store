@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ultimate Pet Platform</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f9fc;
+    color: #333;
+    scroll-behavior: smooth;
+  }
+  a {
+    color: #3a99d8;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Navbar */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #2e5aac;
+    color: white;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+  header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header nav .logo {
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    user-select: none;
+  }
+  header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  header nav ul li a {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  header nav ul li a:hover,
+  header nav ul li a.active {
+    background: #1c3e75;
+  }
+
+  /* Search bar */
+  #search-bar {
+    margin-left: 1rem;
+    flex-grow: 1;
+    max-width: 300px;
+  }
+  #search-bar input[type="text"] {
+    width: 100%;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+  }
+
+  /* Hero */
+  .hero {
+    margin-top: 60px;
+    background: url('https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1627&q=80') center/cover no-repeat;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 0 0 15px rgba(0,0,0,0.6);
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 3.5rem;
+    margin: 0 1rem 0.5rem;
+  }
+  .hero p {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 600;
+  }
+  .hero button {
+    margin-top: 1.75rem;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    background-color: #ff9800;
+    color: #fff;
+    box-shadow: 0 6px 10px rgba(255,152,0,0.6);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .hero button:hover {
+    background-color: #e68900;
+  }
+
+  /* Main content container */
+  main {
+    max-width: 1200px;
+    margin: 3rem auto 5rem;
+    padding: 0 1rem;
+  }
+
+  h2.section-title {
+    border-bottom: 3px solid #ff9800;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #2e5aac;
+    font-size: 2rem;
+  }
+
+  /* Section styling */
+  section {
+    margin-bottom: 4rem;
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 18px rgba(46,90,172,.1);
+  }
+
+  /* Basic Online Pet Store */
+  .pet-categories {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .category {
+    flex: 0 0 auto;
+    background: #2e5aac;
+    color: white;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+  }
+  .category:hover, .category.active {
+    background: #1c3e75;
+  }
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 1.5rem;
+  }
+  .product-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+    transition: box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+  }
+  .product-card img {
+    width: 100%;
+    object-fit: cover;
+    height: 140px;
+    user-select: none;
+    pointer-events: none;
+  }
+  .product-info {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-info h4 {
+    margin: 0 0 .4rem 0;
+    font-weight: 700;
+    color: #2e5aac;
+  }
+  .product-info p {
+    flex-grow: 1;
+    margin: 0 0 0.8rem 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  .price-wishlist {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .price {
+    font-weight: 700;
+    color: #ff9800;
+    font-size: 1.15rem;
+  }
+  .wishlist-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #c62828;
+  }
+  .wishlist-btn:hover {
+    color: #b71c1c;
+  }
+
+  /* Adoption section pet profiles */
+  .adoption-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+    gap: 20px;
+  }
+  .pet-profile {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    background: #fefefe;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .pet-profile img {
+    width: 100%;
+    object-fit: cover;
+    height: 180px;
+    user-select: none;
+  }
+  .pet-details {
+    padding: 1rem;
+    flex-grow: 1;
+  }
+  .pet-details h4 {
+    margin: 0 0 .35rem 0;
+    font-size: 1.2rem;
+    color: #2e5aac;
+  }
+  .pet-details p {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  /* Removed apply button as per user request */
+
+  /* Subscription box */
+  .subscription-option {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 15px;
+    box-shadow: 0 6px 18px rgba(255, 152, 0, 0.2);
+  }
+  .subscription-option p {
+    margin: 0;
+  }
+  .subscription-plan {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .subscription-card {
+    flex: 1 1 200px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(255,152,0,0.15);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .subscription-card h5 {
+    margin: 10px 0 8px;
+    color: #2e5aac;
+  }
+  .subscription-card p {
+    font-size: 0.9rem;
+    margin: 0 0 10px 0;
+    flex-grow: 1;
+  }
+  .subscribe-btn {
+    padding: 0.5rem 1rem;
+    background: #ff9800;
+    border: none;
+    border-radius: 25px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .subscribe-btn:hover {
+    background: #e68900;
+  }
+
+  /* Clinic & Health Tracker */
+  .clinic-section form,
+  .training-section form {
+    max-width: 400px;
+    background: #fafafa;
+    padding: 1.8rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(46,90,172,.15);
+  }
+  .clinic-section label,
+  .training-section label {
+    display: block;
+    margin-bottom: .4rem;
+    font-weight: 600;
+    color: #2e5aac;
+  }
+  .clinic-section input,
+  .clinic-section select,
+  .training-section input,
+  .training-section select,
+  .training-section textarea {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  .clinic-section button,
+  .training-section button {
+    padding: 0.7rem 1.3rem;
+    font-weight: 700;
+    background-color: #ff9800;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .clinic-section button:hover,
+  .training-section button:hover {
+    background-color: #e68900;
+  }
+  .health-log {
+    margin-top: 1rem;
+  }
+  .health-log ul {
+    list-style: none;
+    padding: 0;
+  }
+  .health-log li {
+    background: #f5f5f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  /* Training & Grooming section */
+  .training-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 20px;
+  }
+  .training-card {
+    background: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(46,90,172,.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .training-card h4 {
+    margin: 0 0 .8rem 0;
+    color: #2e5aac;
+  }
+  .training-card p {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    margin: 0 0 10px 0;
+  }
+  .training-card .rating {
+    color: #ffb400;
+    font-weight: 700;
+  }
+
+  /* Lost & Found */
+  .lost-found-report {
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+  }
+  .lost-found-report label {
+    display: block;
+    margin-bottom: .3rem;
+    font-weight: 600;
+    color: #2e5aac;
+  }
+  .lost-found-report input,
+  .lost-found-report select,
+  .lost-found-report textarea {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  .lost-found-report button {
+    background-color: #ff9800;
+    border: none;
+    border-radius: 30px;
+    padding: 0.7rem 1.3rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .lost-found-report button:hover {
+    background-color: #e68900;
+  }
+  .map-placeholder {
+    margin-top: 1rem;
+    height: 300px;
+    background: linear-gradient(135deg, #2e5aac 0%, #ff9800 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    border-radius: 12px;
+  }
+
+  /* Social Network */
+  .social-profiles, .discussion-forum {
+    margin-top: 1rem;
+  }
+  .user-profiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .user-card {
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 7px 18px rgba(46,90,172,.1);
+    width: 160px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .user-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    user-select: none;
+  }
+  .user-card h5 {
+    margin: 0.5rem 0;
+    color: #2e5aac;
+  }
+  .photo-gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .photo-gallery img {
+    height: 120px;
+    border-radius: 8px;
+    user-select: none;
+  }
+  .forum-posts {
+    max-width: 800px;
+    margin-top: 1rem;
+  }
+  .forum-post {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+  }
+  .forum-post h6 {
+    margin: 0 0 .3rem 0;
+    color: #2e5aac;
+  }
+  .forum-post p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Custom Accessories */
+  .customization-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .customization-card {
+    flex: 1 1 280px;
+    background: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 6px 22px rgba(255, 152, 0, 0.15);
+    padding: 1.6rem;
+  }
+  .customization-card h4 {
+    color: #2e5aac;
+  }
+  .customization-card label {
+    display: block;
+    margin: 0.8rem 0 0.3rem 0;
+    font-weight: 600;
+  }
+  .customization-card select,
+  .customization-card input[type="text"],
+  .customization-card input[type="color"] {
+    width: 100%;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  .preview-area {
+    margin-top: 1rem;
+    height: 180px;
+    background-color: #eee;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-weight: 600;
+    font-size: 1.25rem;
+    text-align: center;
+    user-select: none;
+  }
+  .customize-btn {
+    margin-top: 1rem;
+    background-color: #ff9800;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    padding: 0.7rem 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  .customize-btn:hover {
+    background-color: #e68900;
+  }
+
+  /* AI Nutrition & Delivery */
+  .ai-form {
+    max-width: 400px;
+    background: #fafafa;
+    padding: 1.8rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(46,90,172,.15);
+  }
+  .ai-form label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    color: #2e5aac;
+  }
+  .ai-form select,
+  .ai-form input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  .ai-form button {
+    background-color: #ff9800;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    padding: 0.7rem 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  .ai-form button:hover {
+    background-color: #e68900;
+  }
+  .ai-suggestion {
+    background: #fef9e7;
+    border: 1px solid #ffecb3;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #795548;
+    font-weight: 600;
+  }
+
+  /* Marketplace */
+  .seller-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.5rem;
+  }
+  .seller-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(255,152,0,0.2);
+    overflow: hidden;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .seller-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    user-select: none;
+    border-radius: 12px 12px 0 0;
+  }
+  .seller-card h4 {
+    margin: 1rem 0 0.5rem 0;
+    color: #2e5aac;
+  }
+  .seller-card p {
+    font-size: 0.9rem;
+    margin: 0 1rem 0.7rem 1rem;
+    text-align: center;
+  }
+  .verified-badge {
+    background: #4caf50;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  /* Blog and newsletter */
+  .blog-section article {
+    background: white;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 6px 18px rgba(46,90,172,.1);
+    border-radius: 10px;
+  }
+  .blog-section h3 {
+    margin-top: 0;
+    color: #2e5aac;
+  }
+  .newsletter {
+    max-width: 400px;
+    margin: 2rem auto 0;
+    text-align: center;
+  }
+  .newsletter input[type="email"] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 30px 0 0 30px;
+    border: 1px solid #ccc;
+    border-right: none;
+  }
+  .newsletter button {
+    padding: 10px 20px;
+    font-weight: 700;
+    border-radius: 0 30px 30px 0;
+    border: 1px solid #ff9800;
+    background-color: #ff9800;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .newsletter button:hover {
+    background-color: #e68900;
+    border-color: #e68900;
+  }
+  .newsletter-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  /* Footer */
+  footer {
+    background: #2e5aac;
+    color: white;
+    text-align: center;
+    padding: 1.8rem 1rem;
+    user-select: none;
+  }
+  footer p {
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    header nav ul {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    main {
+      margin: 4rem 1rem 4rem;
+    }
+    .pet-categories {
+      padding-bottom: 0;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    .hero p {
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav aria-label="Primary">
+    <div class="logo" tabindex="0">Ultimate Pet Platform</div>
+    <ul>
+      <li><a href="#home" class="active" aria-current="page">Home</a></li>
+      <li><a href="#store">Shop</a></li>
+      <li><a href="#adoption">Adoption</a></li>
+      <li><a href="#subscription">Subscription</a></li>
+      <li><a href="#clinic">Clinic</a></li>
+      <li><a href="#training">Training</a></li>
+      <li><a href="#lost-found">Lost & Found</a></li>
+      <li><a href="#social">Social</a></li>
+      <li><a href="#customization">Customize</a></li>
+      <li><a href="#nutrition">Nutrition</a></li>
+      <li><a href="#marketplace">Marketplace</a></li>
+    </ul>
+    <div id="search-bar" role="search">
+      <input type="text" id="searchInput" placeholder="Search pets, products, services..." aria-label="Search pets, products, services" />
+    </div>
+  </nav>
+</header>
+
+<div class="hero" id="home" role="banner">
+  <h1>Welcome to Your One-Stop Pet Shop</h1>
+  <p>Discover pets, products, services & connect with our community</p>
+  <button onclick="document.getElementById('store').scrollIntoView({behavior:'smooth'})" aria-label="Start shopping now">Start Shopping</button>
+</div>
+
+<main role="main">
+
+<!-- 2. Basic Online Pet Store -->
+<section id="store" tabindex="0" aria-labelledby="store-title">
+  <h2 class="section-title" id="store-title">Basic Online Pet Store</h2>
+  <div class="pet-categories" role="tablist" aria-label="Pet Categories">
+    <button class="category active" role="tab" aria-selected="true" aria-controls="category-dogs" id="tab-dogs">Dogs</button>
+    <button class="category" role="tab" aria-selected="false" aria-controls="category-cats" id="tab-cats">Cats</button>
+    <button class="category" role="tab" aria-selected="false" aria-controls="category-birds" id="tab-birds">Birds</button>
+    <button class="category" role="tab" aria-selected="false" aria-controls="category-fish" id="tab-fish">Fish</button>
+  </div>
+  <div class="product-list" id="category-dogs" role="tabpanel" aria-labelledby="tab-dogs">
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=400&q=80" alt="Golden Retriever Puppy" loading="lazy" />
+      <div class="product-info">
+        <h4>Golden Retriever Puppy</h4>
+        <p>Friendly and loving breed perfect for families.</p>
+        <div class="price-wishlist">
+          <div class="price">$500</div>
+          <button class="wishlist-btn" aria-label="Add Golden Retriever Puppy to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80" alt="Dog Food - Premium Kibble" loading="lazy" />
+      <div class="product-info">
+        <h4>Dog Food - Premium Kibble</h4>
+        <p>Nutritious 20lb bag for all dog breeds.</p>
+        <div class="price-wishlist">
+          <div class="price">$70</div>
+          <button class="wishlist-btn" aria-label="Add Dog Food to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="product-list" id="category-cats" role="tabpanel" aria-labelledby="tab-cats" hidden>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=400&q=80" alt="Calico Cat" loading="lazy" />
+      <div class="product-info">
+        <h4>Calico Cat</h4>
+        <p>Playful and affectionate domestic cat.</p>
+        <div class="price-wishlist">
+          <div class="price">$350</div>
+          <button class="wishlist-btn" aria-label="Add Calico Cat to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1611929817108-919d41e621f3?auto=format&fit=crop&w=400&q=80" alt="Cat Treats Variety Pack" loading="lazy" />
+      <div class="product-info">
+        <h4>Cat Treats Variety Pack</h4>
+        <p>Healthy and tasty treats for your feline friend.</p>
+        <div class="price-wishlist">
+          <div class="price">$15</div>
+          <button class="wishlist-btn" aria-label="Add Cat Treats to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="product-list" id="category-birds" role="tabpanel" aria-labelledby="tab-birds" hidden>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1574169208507-e0ef3a92a07b?auto=format&fit=crop&w=400&q=80" alt="Parakeet" loading="lazy" />
+      <div class="product-info">
+        <h4>Parakeet</h4>
+        <p>Colorful and social bird companion.</p>
+        <div class="price-wishlist">
+          <div class="price">$80</div>
+          <button class="wishlist-btn" aria-label="Add Parakeet to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1603145739860-4aa57c9be4c4?auto=format&fit=crop&w=400&q=80" alt="Bird Seed Mix" loading="lazy" />
+      <div class="product-info">
+        <h4>Bird Seed Mix</h4>
+        <p>Balanced diet seed mix for all small birds.</p>
+        <div class="price-wishlist">
+          <div class="price">$12</div>
+          <button class="wishlist-btn" aria-label="Add Bird Seed Mix to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="product-list" id="category-fish" role="tabpanel" aria-labelledby="tab-fish" hidden>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Colorful Goldfish" loading="lazy" />
+      <div class="product-info">
+        <h4>Colorful Goldfish</h4>
+        <p>Peaceful and elegant aquarium fish.</p>
+        <div class="price-wishlist">
+          <div class="price">$25</div>
+          <button class="wishlist-btn" aria-label="Add Goldfish to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+    <article class="product-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=80" alt="Aquarium Plant Pack" loading="lazy" />
+      <div class="product-info">
+        <h4>Aquarium Plant Pack</h4>
+        <p>Keep your aquarium lively and healthy.</p>
+        <div class="price-wishlist">
+          <div class="price">$40</div>
+          <button class="wishlist-btn" aria-label="Add Aquarium Plants to wishlist" title="Add to wishlist">&#10084;</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 3. Pet Adoption Platform -->
+<section id="adoption" tabindex="0" aria-labelledby="adoption-title">
+  <h2 class="section-title" id="adoption-title">Pet Adoption Platform</h2>
+  <div class="adoption-list" aria-live="polite" aria-relevant="all">
+    <article class="pet-profile" tabindex="0" aria-label="Pet profile of Bella the Labrador, female, vaccinated">
+      <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=400&q=80" alt="Bella the Labrador" loading="lazy" />
+      <div class="pet-details">
+        <h4>Bella</h4>
+        <p>Breed: Labrador Retriever</p>
+        <p>Age: 3 years | Female | Vaccinated</p>
+        <p>Requires a loving home and lots of playtime.</p>
+      </div>
+    </article>
+    <article class="pet-profile" tabindex="0" aria-label="Pet profile of Max the Tabby Cat, male, neutered">
+      <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=400&q=80" alt="Max the Tabby Cat" loading="lazy" />
+      <div class="pet-details">
+        <h4>Max</h4>
+        <p>Breed: Tabby Cat</p>
+        <p>Age: 4 years | Male | Neutered</p>
+        <p>Calm and affectionate, perfect for indoors.</p>
+      </div>
+    </article>
+    <article class="pet-profile" tabindex="0" aria-label="Pet profile of Polly the Parakeet">
+      <img src="https://images.unsplash.com/photo-1574169208507-e0ef3a92a07b?auto=format&fit=crop&w=400&q=80" alt="Polly the Parakeet" loading="lazy" />
+      <div class="pet-details">
+        <h4>Polly</h4>
+        <p>Breed: Parakeet</p>
+        <p>Age: 2 years</p>
+        <p>Lively bird that loves to socialize.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 4. Pet Subscription Box Service -->
+<section id="subscription" tabindex="0" aria-labelledby="subscription-title">
+  <h2 class="section-title" id="subscription-title">Pet Subscription Box Service</h2>
+  <div class="subscription-option">
+    <p>Monthly delivery of pet food, toys, and treats tailored to your pet.</p>
+  </div>
+  <div class="subscription-plan" aria-live="polite" aria-relevant="all">
+    <article class="subscription-card" tabindex="0">
+      <h5>Small Dog & Puppy Plan</h5>
+      <p>Food, toys, and treats selected for small breeds and puppies.</p>
+      <p><strong>$29.99/month</strong></p>
+      <button class="subscribe-btn" onclick="alert('Subscription functionality coming soon!')">Subscribe</button>
+    </article>
+    <article class="subscription-card" tabindex="0">
+      <h5>Cat Plan</h5>
+      <p>Personalized plans for indoor and outdoor cats.</p>
+      <p><strong>$24.99/month</strong></p>
+      <button class="subscribe-btn" onclick="alert('Subscription functionality coming soon!')">Subscribe</button>
+    </article>
+    <article class="subscription-card" tabindex="0">
+      <h5>Bird Plan</h5>
+      <p>Toys, treats, and nutritious food for your feathered friends.</p>
+      <p><strong>$19.99/month</strong></p>
+      <button class="subscribe-btn" onclick="alert('Subscription functionality coming soon!')">Subscribe</button>
+    </article>
+  </div>
+</section>
+
+<!-- 5. Virtual Pet Clinic & Health Tracker -->
+<section id="clinic" tabindex="0" aria-labelledby="clinic-title" class="clinic-section">
+  <h2 class="section-title" id="clinic-title">Virtual Pet Clinic & Health Tracker</h2>
+  <form aria-label="Book a virtual vet consultation form" id="vetForm">
+    <label for="petNameInput">Pet Name</label>
+    <input type="text" id="petNameInput" name="petNameInput" placeholder="Your pet's name" required />
+    <label for="consultDate">Appointment Date</label>
+    <input type="date" id="consultDate" name="consultDate" required />
+    <label for="vetReason">Reason for Consultation</label>
+    <select id="vetReason" name="vetReason" required>
+      <option value="">Select a reason</option>
+      <option>Routine Check-up</option>
+      <option>Vaccination</option>
+      <option>Illness or Injury</option>
+      <option>Behavior Consultation</option>
+    </select>
+    <button type="submit">Book Appointment</button>
+  </form>
+
+  <div class="health-log" aria-live="polite" aria-atomic="true" aria-relevant="additions" style="margin-top:2rem;">
+    <h3>Health Tracker</h3>
+    <ul id="healthRecords">
+      <li>No health records yet. Use the form above to book your first consultation.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6. Pet Training & Grooming Booking Service -->
+<section id="training" tabindex="0" aria-labelledby="training-title" class="training-section">
+  <h2 class="section-title" id="training-title">Pet Training & Grooming Booking Service</h2>
+  <div class="training-list" aria-live="polite" aria-relevant="all">
+    <article class="training-card" tabindex="0">
+      <h4>Happy Paws Training</h4>
+      <p>Professional dog training services tailored to your pet's needs.</p>
+      <div class="rating" aria-label="4.5 star rating">★★★★☆ 4.5</div>
+      <button onclick="alert('Booking functionality coming soon!')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff9800; border:none; border-radius: 25px; color: white; font-weight: 700; cursor:pointer;">Book Now</button>
+    </article>
+    <article class="training-card" tabindex="0">
+      <h4>Feline Grooming Experts</h4>
+      <p>Gentle grooming for cats with experienced specialists.</p>
+      <div class="rating" aria-label="4 star rating">★★★★☆ 4.0</div>
+      <button onclick="alert('Booking functionality coming soon!')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff9800; border:none; border-radius: 25px; color: white; font-weight: 700; cursor:pointer;">Book Now</button>
+    </article>
+    <article class="training-card" tabindex="0">
+      <h4>Bird Behavior Training</h4>
+      <p>Expert guidance to improve your bird's behavior and social skills.</p>
+      <div class="rating" aria-label="5 star rating">★★★★★ 5.0</div>
+      <button onclick="alert('Booking functionality coming soon!')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff9800; border:none; border-radius: 25px; color: white; font-weight: 700; cursor:pointer;">Book Now</button>
+    </article>
+  </div>
+</section>
+
+<!-- 7. Lost & Found Pet Platform -->
+<section id="lost-found" tabindex="0" aria-labelledby="lostfound-title">
+  <h2 class="section-title" id="lostfound-title">Lost & Found Pet Platform</h2>
+  <form class="lost-found-report" aria-label="Report lost or found pet" id="lostFoundForm">
+    <label for="reportType">Report Type</label>
+    <select id="reportType" required>
+      <option value="">Select...</option>
+      <option value="lost">Lost Pet</option>
+      <option value="found">Found Pet</option>
+    </select>
+    <label for="petNameLF">Pet Name</label>
+    <input type="text" id="petNameLF" placeholder="Pet's name" />
+    <label for="petDescriptionLF">Description</label>
+    <textarea id="petDescriptionLF" rows="3" placeholder="Description, breed, color, etc." required></textarea>
+    <label for="locationLF">Last Seen Location</label>
+    <input type="text" id="locationLF" placeholder="City or neighborhood" required />
+    <button type="submit">Submit Report</button>
+  </form>
+  <div class="map-placeholder" aria-label="Map showing lost pet sightings">
+    Map showing lost/found pet sightings will be here (Map integration coming soon)
+  </div>
+</section>
+
+<!-- 8. Pet Social Network -->
+<section id="social" tabindex="0" aria-labelledby="social-title">
+  <h2 class="section-title" id="social-title">Pet Social Network</h2>
+  <div class="social-profiles">
+    <h3>Featured Pet Profiles</h3>
+    <div class="user-profiles">
+      <article class="user-card" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=400&q=60" alt="Fluffy the Poodle" />
+        <h5>Fluffy &amp; Jane</h5>
+      </article>
+      <article class="user-card" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=400&q=60" alt="Rocky the Bulldog" />
+        <h5>Rocky &amp; Mike</h5>
+      </article>
+      <article class="user-card" tabindex="0">
+        <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=400&q=60" alt="Whiskers the Cat" />
+        <h5>Whiskers &amp; Lily</h5>
+      </article>
+    </div>
+  </div>
+  <div class="photo-gallery" aria-label="Recent photos shared">
+    <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=200&q=60" alt="Happy dog playing" tabindex="0" />
+    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=200&q=60" alt="Cat resting on sofa" tabindex="0" />
+    <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=200&q=60" alt="Puppy looking up" tabindex="0" />
+  </div>
+  <div class="discussion-forum" aria-live="polite" aria-atomic="true" aria-relevant="additions">
+    <h3>Discussion Forums</h3>
+    <article class="forum-post" tabindex="0" aria-label="Post about training tips">
+      <h6>Training Tips for New Puppy Owners</h6>
+      <p>Has anyone tried clicker training? Works wonders for my Labrador!</p>
+    </article>
+    <article class="forum-post" tabindex="0" aria-label="Post about best food brands">
+      <h6>Best Dog Food Brands Recommendations?</h6>
+      <p>Looking for nutritious, grain-free options. Suggestions welcome!</p>
+    </article>
+  </div>
+</section>
+
+<!-- 9. Pet Accessories Customization Store -->
+<section id="customization" tabindex="0" aria-labelledby="customization-title">
+  <h2 class="section-title" id="customization-title">Pet Accessories Customization Store</h2>
+  <div class="customization-options">
+    <form id="customizeForm" class="customization-card" aria-label="Customize your pet accessories form">
+      <h4>Customize Collar</h4>
+      <label for="collarColor">Color</label>
+      <input type="color" id="collarColor" name="collarColor" value="#ff9800" />
+      <label for="collarText">Tag Text</label>
+      <input type="text" id="collarText" name="collarText" maxlength="12" placeholder="Your pet's name" />
+      <button type="submit" class="customize-btn">Preview & Add to Cart</button>
+      <div class="preview-area" id="previewArea">Preview will appear here</div>
+    </form>
+  </div>
+</section>
+
+<!-- 10. Pet Food Delivery with AI Nutrition Suggestions -->
+<section id="nutrition" tabindex="0" aria-labelledby="nutrition-title">
+  <h2 class="section-title" id="nutrition-title">Pet Food Delivery with AI Nutrition Suggestions</h2>
+  <form class="ai-form" id="nutritionForm" aria-label="AI nutrition suggestion form">
+    <label for="petType">Pet Type</label>
+    <select id="petType" required>
+      <option value="">Select...</option>
+      <option value="dog">Dog</option>
+      <option value="cat">Cat</option>
+      <option value="bird">Bird</option>
+      <option value="fish">Fish</option>
+    </select>
+    <label for="petAge">Age (years)</label>
+    <input type="number" id="petAge" min="0" max="25" placeholder="e.g. 5" required />
+    <label for="healthConcerns">Health Concerns</label>
+    <select id="healthConcerns">
+      <option value="none">None</option>
+      <option value="allergies">Allergies</option>
+      <option value="weight">Weight Control</option>
+      <option value="sensitive">Sensitive Stomach</option>
+      <option value="other">Other</option>
+    </select>
+    <button type="submit">Get Recommendation</button>
+  </form>
+  <div class="ai-suggestion" id="aiSuggestion" role="alert" aria-live="polite" aria-atomic="true" hidden></div>
+</section>
+
+<!-- 11. Pet Marketplace for Local Sellers -->
+<section id="marketplace" tabindex="0" aria-labelledby="marketplace-title">
+  <h2 class="section-title" id="marketplace-title">Pet Marketplace for Local Sellers</h2>
+  <div class="seller-list" aria-live="polite" aria-relevant="all">
+    <article class="seller-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=60" alt="Breeder profile of Happy Tails Dog Breeders" />
+      <h4>Happy Tails Dog Breeders</h4>
+      <p>Experienced breeders of Golden Retrievers and Labradors.</p>
+      <div class="verified-badge" aria-label="Verified Seller">Verified</div>
+    </article>
+    <article class="seller-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1542365887-315e85d5b747?auto=format&fit=crop&w=400&q=60" alt="Local pet food supplier, Nature's Choice" />
+      <h4>Nature's Choice</h4>
+      <p>Local supplier of organic and grain-free pet food.</p>
+      <div class="verified-badge" aria-label="Verified Seller">Verified</div>
+    </article>
+    <article class="seller-card" tabindex="0">
+      <img src="https://images.unsplash.com/photo-1601282932015-f032ae2e822e?auto=format&fit=crop&w=400&q=60" alt="Bird breeder Feather & Friends" />
+      <h4>Feather &amp; Friends</h4>
+      <p>Specialized breeders of exotic birds and parakeets.</p>
+      <div class="verified-badge" aria-label="Verified Seller">Verified</div>
+    </article>
+  </div>
+</section>
+
+<!-- Blog & Newsletter -->
+<section aria-labelledby="blog-title" style="max-width: 1000px; margin: 3rem auto; padding: 0 1rem;">
+  <h2 class="section-title" id="blog-title">Pet Care Blog & Newsletter</h2>
+  <div class="blog-section">
+    <article>
+      <h3>How to Train Your Puppy Effectively</h3>
+      <p>Starting your puppy training journey right makes a lifelong difference. Here are some tips to get you started...</p>
+      <a href="#" aria-label="Read full article on training your puppy">Read More</a>
+    </article>
+    <article>
+      <h3>Best Foods for Senior Cats</h3>
+      <p>Senior cats have different nutritional needs. Discover the best diets to keep your beloved feline healthy...</p>
+      <a href="#" aria-label="Read full article about senior cat nutrition">Read More</a>
+    </article>
+  </div>
+  <div class="newsletter" aria-label="Newsletter signup">
+    <h3>Subscribe to Our Newsletter</h3>
+    <form id="newsletterForm" aria-label="Newsletter subscription form">
+      <label for="newsletterEmail" class="visually-hidden">Email address</label>
+      <div class="newsletter-wrapper">
+        <input type="email" id="newsletterEmail" required placeholder="Enter your email" />
+        <button type="submit">Subscribe</button>
+      </div>
+    </form>
+    <div id="newsletterMessage" aria-live="polite" aria-atomic="true" style="margin-top: 1rem; font-weight: 600;"></div>
+  </div>
+</section>
+
+<footer role="contentinfo">
+  <p>Ultimate Pet Platform &copy; 2024 | <a href="mailto:support@petplatform.com" style="color:#ffcc80;">Contact Support</a></p>
+</footer>
+
+<script>
+  // Navigation active link highlighting
+  const navLinks = document.querySelectorAll('header nav a');
+  function setActiveLink() {
+    const scrollPos = window.scrollY + 70;
+    navLinks.forEach(link => {
+      const section = document.querySelector(link.getAttribute('href'));
+      if (section && section.offsetTop <= scrollPos && (section.offsetTop + section.offsetHeight) > scrollPos) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }
+  window.addEventListener('scroll', setActiveLink);
+  setActiveLink();
+
+  // Store category tabs
+  const categoryButtons = document.querySelectorAll('.pet-categories .category');
+  const categoryPanels = document.querySelectorAll('.product-list');
+  categoryButtons.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      categoryPanels.forEach(p => p.hidden = true);
+      categoryPanels[index].hidden = false;
+    });
+  });
+
+  // Wishlist handlers (placeholder functionality)
+  const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+  wishlistBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      alert('Added to your wishlist!');
+    });
+  });
+
+  // Vet clinic appointment booking & health tracker
+  const vetForm = document.getElementById('vetForm');
+  const healthRecordsList = document.getElementById('healthRecords');
+  let healthRecords = [];
+  vetForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const pet = vetForm.petNameInput.value.trim();
+    const date = vetForm.consultDate.value;
+    const reason = vetForm.vetReason.value;
+    if(pet && date && reason) {
+      healthRecords.push({pet, date, reason});
+      updateHealthRecords();
+      alert('Your appointment has been booked!');
+      vetForm.reset();
+    }
+  });
+  function updateHealthRecords() {
+    if(healthRecords.length === 0) {
+      healthRecordsList.innerHTML = '<li>No health records yet. Use the form above to book your first consultation.</li>';
+      return;
+    }
+    healthRecordsList.innerHTML = healthRecords.map(rec => 
+      `<li><strong>${rec.pet}</strong> - ${new Date(rec.date).toLocaleDateString()}: ${rec.reason}</li>`).join('');
+  }
+  updateHealthRecords();
+
+  // Lost & Found form submission placeholder
+  document.getElementById('lostFoundForm').addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Thank you for submitting your lost/found pet report. Our community will be notified.');
+    e.target.reset();
+  });
+
+  // Customization preview
+  const collarColorInput = document.getElementById('collarColor');
+  const collarTextInput = document.getElementById('collarText');
+  const previewArea = document.getElementById('previewArea');
+  document.getElementById('customizeForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const color = collarColorInput.value;
+    const text = collarTextInput.value.trim() || 'Your Pet';
+    previewArea.style.backgroundColor = color;
+    previewArea.textContent = text;
+    alert('Customization preview updated! (Add to cart functionality coming soon)');
+  });
+
+  // AI Nutrition suggestion
+  const nutritionForm = document.getElementById('nutritionForm');
+  const aiSuggestion = document.getElementById('aiSuggestion');
+  nutritionForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const petType = document.getElementById('petType').value;
+    const petAge = parseInt(document.getElementById('petAge').value, 10);
+    const health = document.getElementById('healthConcerns').value;
+
+    if(!petType || !petAge || petAge < 0) {
+      alert('Please enter valid pet type and age.');
+      return;
+    }
+
+    let recommendation = 'We recommend the standard balanced diet for your ' + petType + '.';
+    if (health !== 'none') {
+      recommendation = `Based on your pet's health concerns (${health}), we suggest consulting with a veterinarian for specialized food recommendations.`;
+    }
+    if(petAge < 1){
+      recommendation = `As your ${petType} is a young pet, we recommend specially formulated growth food rich in nutrients.`;
+    } else if(petAge > 8){
+      recommendation = `Since your ${petType} is a senior, consider food that supports joint and kidney health.`;
+    }
+
+    aiSuggestion.textContent = recommendation;
+    aiSuggestion.hidden = false;
+  });
+
+  // Newsletter signup placeholder
+  const newsletterForm = document.getElementById('newsletterForm');
+  const newsletterMsg = document.getElementById('newsletterMessage');
+  newsletterForm.addEventListener('submit', e => {
+    e.preventDefault();
+    newsletterMsg.textContent = 'Thank you for subscribing!';
+    newsletterForm.reset();
+  });
+
+  // Search bar filter (simple frontend demo filtering store categories only)
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    // For simplicity, filter visible products in all categories
+    document.querySelectorAll('.product-list').forEach(panel => {
+      [...panel.children].forEach(card => {
+        const title = card.querySelector('h4').textContent.toLowerCase();
+        if(title.includes(query)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+</script>
+
+</body>
+</html>
+
